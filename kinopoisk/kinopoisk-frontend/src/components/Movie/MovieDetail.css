@@ -1,0 +1,28 @@
+/* Стили для страницы с детальной информацией о фильме */
+.movie-detail-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.movie-detail-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.movie-detail-title {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.movie-detail-genres {
+  font-size: 18px;
+  color: #7f8c8d;
+}
+
+.movie-detail-description {
+  margin-top: 20px;
+  font-size: 18px;
+  line-height: 1.6;
+}

@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="{% static 'movies/css/auth.css' %}">
+</head>
+<body>
+    <div class="auth-container">
+        <h1 class="auth-title">Регистрация</h1>
+        <form id="registerForm" class="auth-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" required minlength="8">
+            </div>
+            <button type="submit" class="auth-button">Зарегистрироваться</button>
+        </form>
+        <p class="auth-link">Уже есть аккаунт? <a href="{% url 'login_page' %}">Войдите</a></p>
+        <div id="error-message" class="error-message"></div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = '';
+            
+            try {
+                const response = await fetch('{% url "register_submit" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: JSON.stringify({
+                        username: formData.get('username'),
+                        email: formData.get('email'),
+                        password: formData.get('password')
+                    }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    errorElement.textContent = data.error || 'Ошибка регистрации';
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                errorElement.textContent = 'Ошибка соединения с сервером';
+            }
+        });
+    </script>
+</body>
+</html>

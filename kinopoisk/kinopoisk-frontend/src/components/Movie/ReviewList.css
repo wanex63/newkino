@@ -1,0 +1,38 @@
+.review-list {
+  margin-top: 2rem;
+}
+
+.review-item {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.review-author {
+  font-weight: bold;
+}
+
+.review-rating {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.review-text {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.no-reviews {
+  color: #666;
+  text-align: center;
+  padding: 1rem;
+}

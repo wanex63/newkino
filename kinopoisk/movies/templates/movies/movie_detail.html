@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }}</title>
+    <link rel="stylesheet" href="{% static 'movies/css/movie.css' %}">
+</head>
+<body>
+    <header class="movie-header">
+        <a href="{% url 'movie_list' %}" class="back-link">← Назад к списку</a>
+        <h1>{{ movie.title }}</h1>
+    </header>
+
+    <main class="movie-container">
+        <div class="movie-info">
+            <div class="movie-meta">
+                <span class="movie-year">{{ movie.release_year }} год</span>
+                <span class="movie-rating">★ {{ movie.rating|default:"0.0" }}</span>
+            </div>
+            
+            <div class="movie-description">
+                <h2>Описание</h2>
+                <p>{{ movie.description }}</p>
+            </div>
+
+            <div class="movie-genres">
+                <h2>Жанры</h2>
+                {% if movie.genres.all %}
+                    <ul class="genre-list">
+                        {% for genre in movie.genres.all %}
+                            <li class="genre-item">{{ genre.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="no-genres">Жанры не указаны</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <section class="reviews-section">
+            <h2>Отзывы</h2>
+            {% if request.user.is_authenticated %}
+                <form class="review-form" method="POST" action="{% url 'api_create_review' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="movie" value="{{ movie.id }}">
+                    <textarea name="content" placeholder="Ваш отзыв" required></textarea>
+                    <select name="rating" required>
+                        <option value="" disabled selected>Оценка</option>
+                        {% for i in "12345678910" %}
+                            <option value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Отправить</button>
+                </form>
+            {% else %}
+                <p class="login-prompt">Чтобы оставить отзыв, <a href="{% url 'login_page' %}">войдите</a></p>
+            {% endif %}
+
+            <div class="reviews-list">
+                {% for review in reviews %}
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-author">{{ review.user.username }}</span>
+                            <span class="review-rating">★ {{ review.rating }}</span>
+                            <span class="review-date">{{ review.created_at|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        <p class="review-text">{{ review.text }}</p>
+                    </div>
+                {% empty %}
+                    <p class="no-reviews">Отзывов пока нет</p>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>

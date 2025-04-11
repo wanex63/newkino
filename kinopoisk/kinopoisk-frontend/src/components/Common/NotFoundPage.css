@@ -1,0 +1,15 @@
+/* Стили для страницы 404 */
+.not-found-container {
+  text-align: center;
+  padding: 50px;
+}
+
+.not-found-container h1 {
+  font-size: 80px;
+  color: #e74c3c;
+}
+
+.not-found-container p {
+  font-size: 20px;
+  color: #7f8c8d;
+}

@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <link rel="stylesheet" href="{% static 'movies/css/auth.css' %}">
+</head>
+<body>
+    <div class="auth-container">
+        <h1 class="auth-title">Вход</h1>
+        <form id="loginForm" class="auth-form">
+            <div class="form-group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="auth-button">Войти</button>
+        </form>
+        <p class="auth-link">Нет аккаунта? <a href="{% url 'register_page' %}">Зарегистрируйтесь</a></p>
+        <div id="error-message" class="error-message"></div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = '';
+            
+            try {
+                const response = await fetch('{% url "login_submit" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: JSON.stringify({
+                        username: formData.get('username'),
+                        password: formData.get('password')
+                    }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    errorElement.textContent = data.error || 'Неверные учетные данные';
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                errorElement.textContent = 'Ошибка соединения с сервером';
+            }
+        });
+    </script>
+</body>
+</html>
