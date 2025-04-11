@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список фильмов</title>
+    <link rel="stylesheet" href="{% static 'movies/css/movies.css' %}">
+</head>
+<body>
+    <header class="movies-header">
+        <h1>Список фильмов</h1>
+        <div class="auth-links">
+            {% if user.is_authenticated %}
+                <span>Привет, {{ user.username }}!</span>
+                <a href="{% url 'logout' %}">Выйти</a>
+            {% else %}
+                <a href="{% url 'login_page' %}">Войти</a>
+                <a href="{% url 'register_page' %}">Регистрация</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="movies-container">
+        <form method="get" action="{% url 'search_movies' %}" class="search-form">
+            <input type="text" name="q" placeholder="Поиск по названию" value="{{ query|default:'' }}" required>
+            <button type="submit">Искать</button>
+        </form>
+
+        {% if movies %}
+            <ul class="movies-list">
+                {% for movie in movies %}
+                    <li class="movie-item">
+                        <a href="{% url 'movie_detail' movie.id %}" class="movie-link">
+                            <div class="movie-poster">
+                                <img src="{% static 'movies/images/default_poster.jpg' %}" alt="{{ movie.title }}">
+                            </div>
+                            <div class="movie-info">
+                                <h2 class="movie-title">{{ movie.title }}</h2>
+                                <div class="movie-meta">
+                                    <span class="movie-year">{{ movie.release_year }}</span>
+                                    <span class="movie-rating">★ {{ movie.rating|default:"0.0" }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="no-movies">Фильмы не найдены</p>
+        {% endif %}
+    </main>
+</body>
+</html>

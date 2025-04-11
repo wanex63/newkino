@@ -1,0 +1,20 @@
+/* Стили для страницы поиска фильмов */
+.search-movies-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-movies-input {
+  width: 300px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-movie-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
